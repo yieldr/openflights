@@ -122,10 +122,10 @@ function init(){
 var poliLayer = new OpenLayers.Layer.XYZ(
     "Political",
     [
-"http://a.basemaps.cartocdn.com/light_nolabels/${z}/${x}/${y}.png",
-"http://b.basemaps.cartocdn.com/light_nolabels/${z}/${x}/${y}.png",
-"http://c.basemaps.cartocdn.com/light_nolabels/${z}/${x}/${y}.png",
-"http://d.basemaps.cartocdn.com/light_nolabels/${z}/${x}/${y}.png"
+"https://cartodb-basemaps-1.global.ssl.fastly.net/light_nolabels/${z}/${x}/${y}.png",
+"https://cartodb-basemaps-1.global.ssl.fastly.net/light_nolabels/${z}/${x}/${y}.png",
+"https://cartodb-basemaps-1.global.ssl.fastly.net/light_nolabels/${z}/${x}/${y}.png",
+"https://cartodb-basemaps-1.global.ssl.fastly.net/light_nolabels/${z}/${x}/${y}.png"
     ], {
         attribution: "Map tiles by <a href='http://cartodb.com'>CartoDB</a> (CC BY 3.0), data by <a href='/http://openstreetmap.com'>OSM</a> (ODbL)",
         sphericalMercator: true,
@@ -136,7 +136,7 @@ var poliLayer = new OpenLayers.Layer.XYZ(
 var artLayer = new OpenLayers.Layer.XYZ(
     "Artistic",
     [
-"http://c.tile.stamen.com/watercolor/${z}/${x}/${y}.png"
+"https://stamen-tiles.a.ssl.fastly.net/watercolor/${z}/${x}/${y}.png"
     ], {
         attribution: "Tiles &copy; <a href='http://maps.stamen.com/'>Stamen</a>",
         sphericalMercator: true,
@@ -1744,9 +1744,18 @@ function showTop10(str) {
     var rows = airports.split(":");
     for (r = 0; r < rows.length; r++) {
       var col = rows[r].split(",");
+      var noOfColumns = col.length;
       // name, iata, count, apid
-      desc = col[0].substring(0,20) + " (" + col[1] + ")";
-      table += "<tr><td><a href='#' onclick='JavaScript:selectAirport(" + col[3] + ");'>" + desc + "</a></td><td style='text-align: right; padding-left: 10px'>" + parseInt(col[2]) + "</td>";
+      if(noOfColumns > 4) {
+        var tooManyColumns = noOfColumns - 4;
+        // join name back together
+        var airportName = col.slice(0, tooManyColumns + 1).join(',');
+        desc = airportName.substring(0,20) + " (" + col[noOfColumns - 3] + ")";
+      }
+      else {
+        desc = col[0].substring(0,20) + " (" + col[1] + ")";
+      }
+      table += "<tr><td><a href='#' onclick='JavaScript:selectAirport(" + col[noOfColumns-1] + ");'>" + desc + "</a></td><td style='text-align: right; padding-left: 10px'>" + parseInt(col[noOfColumns-2]) + "</td>";
     }
     table += "</table>";
 
